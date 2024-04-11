@@ -1,15 +1,19 @@
 package lv.acodemy.page_object;
 
 import lombok.Getter;
+import lv.acodemy.utils.DriverManager;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.How;
 import org.openqa.selenium.support.PageFactory;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
+
+import java.sql.Driver;
+import java.time.Duration;
+
 
 public class AuthorizationPage {
-
-    ChromeDriver driver;
 
     @FindBy(how = How.XPATH, xpath = "//input[@data-test='username']")
     @Getter
@@ -23,15 +27,17 @@ public class AuthorizationPage {
     @Getter
     private WebElement submitButton;
 
+    WebDriverWait waiter = new WebDriverWait(DriverManager.getDriver(), Duration.ofSeconds(5));
 
-    public AuthorizationPage(ChromeDriver driver) {
-        this.driver = driver;
-        PageFactory.initElements(driver,this);
+    public AuthorizationPage() {
+        PageFactory.initElements(DriverManager.getDriver(), this);
     }
 
     public void authorize(String username, String password) {
         getUsernameField().sendKeys(username);
         getPasswordField().sendKeys(password);
         getSubmitButton().click();
+
+        waiter.until(ExpectedConditions.invisibilityOf(submitButton));
     }
 }
